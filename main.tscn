@@ -1,6 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://bwh1evuc4lh6t"]
+[gd_scene load_steps=9 format=3 uid="uid://bwh1evuc4lh6t"]
 
+[ext_resource type="Script" path="res://main.gd" id="1_h8xgj"]
 [ext_resource type="PackedScene" uid="uid://beud2rv8txt7v" path="res://player.tscn" id="1_xmuun"]
+[ext_resource type="PackedScene" uid="uid://barefp84lo2wo" path="res://mob.tscn" id="2_pit1h"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_df8uf"]
 size = Vector3(60, 2, 60)
@@ -8,9 +10,22 @@ size = Vector3(60, 2, 60)
 [sub_resource type="BoxMesh" id="BoxMesh_megcq"]
 size = Vector3(60, 2, 60)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mxsf3"]
+albedo_color = Color(0.948791, 0.576834, 0.442351, 1)
+
 [sub_resource type="CylinderMesh" id="CylinderMesh_v3r7e"]
+material = SubResource("StandardMaterial3D_mxsf3")
+
+[sub_resource type="Curve3D" id="Curve3D_ur0mm"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -12.9981, 0, -14.004, 0, 0, 0, 0, 0, 0, 13.0023, 0, -13.9994, 0, 0, 0, 0, 0, 0, 12.9975, 0, 14.9988, 0, 0, 0, 0, 0, 0, -12.983, 0, 15.0013, 0, 0, 0, 0, 0, 0, -12.9981, 0, -14.004),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
 
 [node name="Main" type="Node"]
+script = ExtResource("1_h8xgj")
+mob_scene = ExtResource("2_pit1h")
 
 [node name="Ground" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
@@ -53,3 +68,15 @@ mesh = SubResource("CylinderMesh_v3r7e")
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="Cylinders"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 29)
 mesh = SubResource("CylinderMesh_v3r7e")
+
+[node name="SpawnPath" type="Path3D" parent="."]
+curve = SubResource("Curve3D_ur0mm")
+
+[node name="SpawnLocation" type="PathFollow3D" parent="SpawnPath"]
+transform = Transform3D(-0.000177904, 0, -1, 0, 1, 0, 1, 0, -0.000177904, -12.9981, 0, -14.004)
+
+[node name="MobTimer" type="Timer" parent="."]
+wait_time = 0.5
+autostart = true
+
+[connection signal="timeout" from="MobTimer" to="." method="_on_mob_timer_timeout"]
